@@ -1,18 +1,28 @@
 import React, {useEffect, useState} from 'react';
-import { NavLink } from 'react-router-dom';
+import {NavLink, useNavigate } from 'react-router-dom';
+import SecurityModel from '../../services/model/SecurityModel';
+import UserModel from '../../services/model/UserModel';
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const location = useNavigate();
 
     useEffect(() => {
         document.title = 'Stoke Drive | Authentification';
-    }, [])
+    }, []);
 
     const handleSubmit = (e) => {
+        e.preventDefault();
         if (email && password) {
-            console.log('lance le bail')
-            return;
+            (new SecurityModel()).authentication(email, password)
+                .then(() => (new UserModel()).getCurrentUser())
+                .then(user => {
+                    window.sessionStorage.setItem('user', JSON.stringify(user));
+                    location('/drive');
+                });
+        } else {
+            console.log('form not valid');
         }
     }
 
@@ -45,43 +55,43 @@ const Login = () => {
                                         </div>
                                     </div>
                                     <div className="p-2">
-                                        <div className="form-group">
-                                            <label htmlFor="username">Email</label>
-                                            <input type="text" className="form-control" id="username" placeholder="Entrez votre email"
-                                                   onChange={(event) => setEmail(event.target.value)}
-                                            />
-                                        </div>
+                                        <form className="form-horizontal" onSubmit={handleSubmit} >
+                                            <div className="form-group">
+                                                <label htmlFor="username">Email</label>
+                                                <input type="text" className="form-control" id="username" placeholder="Entrez votre email"
+                                                       onChange={(event) => setEmail(event.target.value)}
+                                                />
+                                            </div>
 
-                                        <div className="form-group">
-                                            <label htmlFor="userpassword">Mot de passe</label>
-                                            <input type="password" className="form-control" id="userpassword" placeholder="Entrez votre mot de passe"
-                                                   onChange={(event) => setPassword(event.target.value)}
-                                            />
-                                        </div>
+                                            <div className="form-group">
+                                                <label htmlFor="userpassword">Mot de passe</label>
+                                                <input type="password" className="form-control" id="userpassword" placeholder="Entrez votre mot de passe"
+                                                       onChange={(event) => setPassword(event.target.value)}
+                                                />
+                                            </div>
 
-                                        <div className="mt-3">
-                                            <button className="btn btn-primary btn-block waves-effect waves-light" type="button"
-                                                    onClick={handleSubmit}
-                                            >
-                                                Se connecter
-                                            </button>
-                                        </div>
-
+                                            <div className="mt-3">
+                                                <button className="btn btn-primary btn-block waves-effect waves-light" type="submit"
+                                                >
+                                                    Se connecter
+                                                </button>
+                                            </div>
+                                        </form>
                                         <div className="mt-4 text-center">
                                             <h5 className="font-size-14 mb-3">Se connecter avec</h5>
                                             <ul className="list-inline">
                                                 <li className="list-inline-item">
-                                                    <a className="social-list-item bg-primary text-white border-primary">
+                                                    <a href='#/' className="social-list-item bg-primary text-white border-primary">
                                                         <i className="mdi mdi-facebook"></i>
                                                     </a>
                                                 </li>
                                                 <li className="list-inline-item">
-                                                    <a className="social-list-item bg-info text-white border-info">
+                                                    <a href='#/' className="social-list-item bg-info text-white border-info">
                                                         <i className="mdi mdi-twitter"></i>
                                                     </a>
                                                 </li>
                                                 <li className="list-inline-item">
-                                                    <a className="social-list-item bg-danger text-white border-danger">
+                                                    <a href='#/' className="social-list-item bg-danger text-white border-danger">
                                                         <i className="mdi mdi-google"></i>
                                                     </a>
                                                 </li>

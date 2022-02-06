@@ -4,6 +4,8 @@ import Login from './pages/security/Login.js';
 import Register from './pages/security/Register';
 import ResetPassword from './pages/security/ResetPassword';
 import NotFound from './pages/NotFound';
+import Drive from './pages/drive/Drive';
+import PrivateRoute from './services/utils/PrivateRoute';
 
 const App = () => {
     return (
@@ -13,12 +15,13 @@ const App = () => {
                 <Route exact path='/login' element={<Login />} />
                 <Route exact path='/register' element={<Register />} />
                 <Route exact path='/reset/password' element={<ResetPassword />} />
+                <Route exact path='/drive' element={<PrivateRoute/>}>
+                    <Route exact path='/drive' element={<Drive />} />
+                </Route>
                 <Route exact path='*' element={<NotFound />} />
             </Routes>
         </BrowserRouter>
     );
 }
-
-/* ya des protectedRoute pour les routes protégées */
 
 export default App;
