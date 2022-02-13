@@ -22,7 +22,7 @@ const NotFound = () => {
                                 Oups ! La page que vous recherchez semble introuvable.
                             </h4>
                             <div className="mt-5 text-center">
-                                <a className="btn btn-primary waves-effect waves-light" onClick={previousPage}>
+                                <a href={false} className="btn btn-primary waves-effect waves-light" onClick={previousPage}>
                                     Retourner en arrière
                                 </a>
                             </div>
@@ -32,13 +32,13 @@ const NotFound = () => {
                 <div className="row justify-content-center">
                     <div className="col-md-8 col-xl-6">
                         <div>
-                            <img src="img/security/error-img.png" alt="" className="img-fluid" />
+                            <img src="img/security/error-img.png" alt="" className="img-fluid"/>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-);
+    );
 }
 
 export default NotFound;

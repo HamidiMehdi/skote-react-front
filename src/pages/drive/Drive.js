@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react';
+import Sidebar from '../components/Sidebar';
 
 const Drive = () => {
 
@@ -8,7 +9,7 @@ const Drive = () => {
 
     return (
         <div>
-            <h1>LE DRIVEEEE</h1>
+            <Sidebar />
         </div>
     );
 }
