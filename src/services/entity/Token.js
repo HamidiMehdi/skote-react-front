@@ -1,6 +1,6 @@
 class Token {
 
-    static JWT_STORAGE_KEY = 'STOKE_DRIVE_JWT_TOKEN';
+    static JWT_STORAGE_KEY = 'SKOTE_DRIVE_JWT_TOKEN';
 
     constructor(token) {
         this.token = token;

@@ -10,7 +10,7 @@ const Login = () => {
     const location = useNavigate();
 
     useEffect(() => {
-        document.title = 'Stoke Drive | Authentification';
+        document.title = 'Skote Drive | Authentification';
     }, []);
 
     const handleSubmit = (e) => {
@@ -45,7 +45,7 @@ const Login = () => {
                                 <div className="row">
                                     <div className="col-7">
                                         <div className="text-primary p-4">
-                                            <h5 className="text-primary">Stoke Drive</h5>
+                                            <h5 className="text-primary">Skote Drive</h5>
                                             <p>Connectez-vous pour accéder à votre drive.</p>
                                         </div>
                                     </div>

@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 
 const NotFound = () => {
     useEffect(() => {
-        document.title = 'Stoke Drive | Page introuvable';
+        document.title = 'Skote Drive | Page introuvable';
     }, [])
 
     const previousPage = (e) => {

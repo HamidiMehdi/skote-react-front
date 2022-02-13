@@ -3,7 +3,7 @@ import Footer from "./components/Footer";
 
 const ResetPassword = () => {
     useEffect(() => {
-        document.title = 'Stoke Drive | Récupérer votre mot de passe';
+        document.title = 'Skote Drive | Récupérer votre mot de passe';
     }, [])
 
     return (
@@ -16,7 +16,7 @@ const ResetPassword = () => {
                                 <div className="row">
                                     <div className="col-7">
                                         <div className="text-primary p-4">
-                                            <h5 className="text-primary">Stoke Drive</h5>
+                                            <h5 className="text-primary">Skote Drive</h5>
                                             <p>Récupérer votre compte avec votre email.</p>
                                         </div>
                                     </div>

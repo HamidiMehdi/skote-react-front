@@ -4,11 +4,12 @@ import Sidebar from '../components/Sidebar';
 const Drive = () => {
 
     useEffect(() => {
-        document.title = 'Stoke Drive | Votre drive';
+        document.title = 'Skote Drive | Votre drive';
     }, [])
 
     return (
         <div>
+            Salut
             <Sidebar />
         </div>
     );
