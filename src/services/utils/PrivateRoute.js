@@ -11,16 +11,14 @@ const PrivateRoute = () => {
             auth = true;
         } else {
             localStorage.removeItem(Token.JWT_STORAGE_KEY);
-            sessionStorage.removeItem('user');
+            sessionStorage.removeItem(Token.USER_STORAGE_KEY);
             auth = false;
         }
     } else {
         localStorage.removeItem(Token.JWT_STORAGE_KEY);
-        sessionStorage.removeItem('user');
+        sessionStorage.removeItem(Token.USER_STORAGE_KEY);
         auth = false;
     }
-
-    // check if user is in session storage
 
     return auth ? <Outlet /> : <Navigate to="/login" />;
 }

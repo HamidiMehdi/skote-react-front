@@ -3,6 +3,7 @@ import {NavLink, useNavigate} from 'react-router-dom';
 import SecurityModel from '../../services/model/SecurityModel';
 import UserModel from '../../services/model/UserModel';
 import Footer from "./components/Footer";
+import Token from "../../services/entity/Token";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -19,7 +20,7 @@ const Login = () => {
             (new SecurityModel()).authentication(email, password)
                 .then(() => (new UserModel()).getCurrentUser())
                 .then(user => {
-                    window.sessionStorage.setItem('user', JSON.stringify(user));
+                    window.sessionStorage.setItem(Token.USER_STORAGE_KEY, JSON.stringify(user));
                     location('/drive');
                 });
         }

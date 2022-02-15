@@ -1,6 +1,7 @@
 class Token {
 
     static JWT_STORAGE_KEY = 'SKOTE_DRIVE_JWT_TOKEN';
+    static USER_STORAGE_KEY = 'SKOTE_DRIVE_USER_SESSION';
 
     constructor(token) {
         this.token = token;
@@ -15,7 +16,7 @@ class Token {
     }
 
     save() {
-        window.localStorage.setItem(Token.JWT_STORAGE_KEY, JSON.stringify(this));
+        localStorage.setItem(Token.JWT_STORAGE_KEY, JSON.stringify(this));
     }
 }
 
