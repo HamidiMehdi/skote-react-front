@@ -21,7 +21,7 @@ const Login = () => {
                 .then(() => (new UserModel()).getCurrentUser())
                 .then(user => {
                     window.sessionStorage.setItem(Token.USER_STORAGE_KEY, JSON.stringify(user));
-                    location('/drive');
+                    location('/dashboard');
                 });
         }
     }

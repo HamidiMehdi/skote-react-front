@@ -1,11 +1,8 @@
 import React from 'react';
 import Token from "../../services/entity/Token";
-import {useNavigate} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 
-const Sidebar = () => {
-
-    const location = useNavigate();
-
+const Sidebar = (props) => {
     const handleShowSidbar = () => {
         let body = document.querySelector('body');
         if (body.classList.contains('sidebar-enable')) {
@@ -15,13 +12,6 @@ const Sidebar = () => {
         }
         body.classList.add('sidebar-enable');
         body.classList.add('vertical-collpsed');
-    }
-
-    const logout = (e) => {
-        e.preventDefault();
-        localStorage.removeItem(Token.JWT_STORAGE_KEY);
-        sessionStorage.removeItem(Token.USER_STORAGE_KEY);
-        location('/login');
     }
 
     return (
@@ -60,18 +50,18 @@ const Sidebar = () => {
                 <div data-simplebar className="h-100">
                     <div id="sidebar-menu">
                         <ul className="metismenu list-unstyled" id="side-menu">
-                            <li className="menu-title">File Manager</li>
-                            <li>
-                                <a href="apps-filemanager.html" className="waves-effect">
+                            <li className="menu-title">Drive Manager</li>
+                            <li className={(props.active == 'dashboard' ? 'mm-active' : '')}>
+                                <NavLink to="/dashboard" className="waves-effect">
                                     <i className="bx bxs-dashboard"></i>
                                     <span key="t-file-manager">Dashboard</span>
-                                </a>
+                                </NavLink>
                             </li>
-                            <li>
-                                <a href="apps-filemanager.html" className="waves-effect">
+                            <li className={(props.active == 'drive' ? 'mm-active' : '')}>
+                                <NavLink to="/drive" className="waves-effect">
                                     <i className="bx bxs-folder"></i>
-                                    <span key="t-file-manager">Gestion</span>
-                                </a>
+                                    <span key="t-file-manager">Drive</span>
+                                </NavLink>
                             </li>
                             <li className="menu-title">Social</li>
                             <li>
@@ -94,15 +84,16 @@ const Sidebar = () => {
                                 </a>
                             </li>
                             <li>
-                                <a href={false} className="waves-effect" onClick={(e) => logout(e)}>
+                                <NavLink to="/logout" className="waves-effect">
                                     <i className="bx bx-log-in"></i>
                                     <span key="t-file-manager">Déconnexion</span>
-                                </a>
+                                </NavLink>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
+            {props.children}
         </div>
     )
 }
