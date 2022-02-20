@@ -1,13 +1,33 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Footer from "./components/Footer";
+import SecurityModel from "../../services/model/SecurityModel";
+import UserModel from "../../services/model/UserModel";
+import Token from "../../services/entity/Token";
+import {useNavigate} from "react-router-dom";
 
 const Register = () => {
+    const [lastname, setLastname] = useState("");
+    const [firstname, setFirstname] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const location = useNavigate();
+
     useEffect(() => {
         document.title = 'Skote Drive | Inscription';
     }, [])
 
-    const handleSubmit = () => {
-        console.log('form submit');
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const securityModel = new SecurityModel();
+        if (lastname && firstname && email && password) {
+            securityModel.register(lastname, firstname, email, password)
+                .then(userRegistred => securityModel.authentication(userRegistred.email, password))
+                .then(() => (new UserModel()).getCurrentUser())
+                .then(user => {
+                    window.sessionStorage.setItem(Token.USER_STORAGE_KEY, JSON.stringify(user));
+                    location('/dashboard');
+                });
+        }
     }
 
     const showPassword = () => {
@@ -54,18 +74,21 @@ const Register = () => {
                                             <label htmlFor="lastname" className="form-label">Nom</label>
                                             <input type="lastname" className="form-control" id="lastname"
                                                    placeholder="Entrez votre nom"
+                                                   onChange={(event) => setLastname(event.target.value)}
                                             />
                                         </div>
                                         <div className="mb-3">
                                             <label htmlFor="firstname" className="form-label">Prénom</label>
                                             <input type="firstname" className="form-control" id="firstname"
                                                    placeholder="Entrez votre prénom"
+                                                   onChange={(event) => setFirstname(event.target.value)}
                                             />
                                         </div>
                                         <div className="mb-3">
                                             <label htmlFor="email" className="form-label">Email</label>
                                             <input type="email" className="form-control" id="email"
                                                    placeholder="Entrez votre email"
+                                                   onChange={(event) => setEmail(event.target.value)}
                                             />
                                         </div>
                                         <div className="mb-3">
@@ -74,6 +97,7 @@ const Register = () => {
                                                 <input type="password" className="form-control" id="input_password"
                                                        placeholder="Entrez votre mot de passe" aria-label="Mot de passe"
                                                        aria-describedby="password-addon"
+                                                       onChange={(event) => setPassword(event.target.value)}
                                                 />
                                                 <button className="btn btn-light " type="button" id="password-addon"
                                                         onClick={() => showPassword()}
