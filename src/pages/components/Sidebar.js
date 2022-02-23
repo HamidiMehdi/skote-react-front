@@ -1,6 +1,7 @@
 import React from 'react';
-import Token from "../../services/entity/Token";
 import {NavLink} from "react-router-dom";
+import AuthService from "../../services/auth.service";
+import * as ROUTES from '../../utils/routes.location';
 
 const Sidebar = (props) => {
     const handleShowSidbar = () => {
@@ -40,7 +41,7 @@ const Sidebar = (props) => {
                                  src="img/security/default-user-img.png"
                                  alt="Header Avatar" />
                             <span className="d-none d-xl-inline-block ms-1" key="t-henry">
-                                {JSON.parse(sessionStorage.getItem(Token.USER_STORAGE_KEY)).firstname}
+                                {AuthService.getCurrentUser().firstname}
                             </span>
                         </div>
                     </div>
@@ -51,14 +52,14 @@ const Sidebar = (props) => {
                     <div id="sidebar-menu">
                         <ul className="metismenu list-unstyled" id="side-menu">
                             <li className="menu-title">Drive Manager</li>
-                            <li className={(props.active == 'dashboard' ? 'mm-active' : '')}>
-                                <NavLink to="/dashboard" className="waves-effect">
+                            <li className={(props.active === 'dashboard' ? 'mm-active' : '')}>
+                                <NavLink to={ROUTES.DASHBOARD} className="waves-effect">
                                     <i className="bx bxs-dashboard"></i>
                                     <span key="t-file-manager">Dashboard</span>
                                 </NavLink>
                             </li>
-                            <li className={(props.active == 'drive' ? 'mm-active' : '')}>
-                                <NavLink to="/drive" className="waves-effect">
+                            <li className={(props.active === 'drive' ? 'mm-active' : '')}>
+                                <NavLink to={ROUTES.DRIVE} className="waves-effect">
                                     <i className="bx bxs-folder"></i>
                                     <span key="t-file-manager">Drive</span>
                                 </NavLink>
@@ -84,7 +85,7 @@ const Sidebar = (props) => {
                                 </a>
                             </li>
                             <li>
-                                <NavLink to="/logout" className="waves-effect">
+                                <NavLink to={ROUTES.LOGOUT} className="waves-effect">
                                     <i className="bx bx-log-in"></i>
                                     <span key="t-file-manager">Déconnexion</span>
                                 </NavLink>

@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import Footer from "./components/Footer";
-import SecurityModel from "../../services/model/SecurityModel";
-import UserModel from "../../services/model/UserModel";
-import Token from "../../services/entity/Token";
 import {useNavigate} from "react-router-dom";
+import AuthService from "../../services/auth.service";
+import * as ROUTES from '../../utils/routes.location';
 
 const Register = () => {
     const [lastname, setLastname] = useState("");
@@ -18,14 +17,16 @@ const Register = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const securityModel = new SecurityModel();
         if (lastname && firstname && email && password) {
-            securityModel.register(lastname, firstname, email, password)
-                .then(userRegistred => securityModel.authentication(userRegistred.email, password))
-                .then(() => (new UserModel()).getCurrentUser())
+            let currentUser = null;
+            AuthService.register(lastname, firstname, email, password)
                 .then(user => {
-                    window.sessionStorage.setItem(Token.USER_STORAGE_KEY, JSON.stringify(user));
-                    location('/dashboard');
+                    currentUser = user;
+                    return AuthService.login(email, password);
+                })
+                .then(token => {
+                    AuthService.storeUser(token, currentUser);
+                    location(ROUTES.DASHBOARD);
                 });
         }
     }
@@ -117,7 +118,7 @@ const Register = () => {
                         </div>
                         <Footer
                             text="Vous avez déjà un compte ?"
-                            url="/login"
+                            url={ROUTES.LOGIN}
                             textButton="Connectez-vous !"
                         />
                     </div>

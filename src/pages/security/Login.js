@@ -1,13 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {NavLink, useNavigate} from 'react-router-dom';
-import SecurityModel from '../../services/model/SecurityModel';
-import UserModel from '../../services/model/UserModel';
 import Footer from "./components/Footer";
-import Token from "../../services/entity/Token";
+import AuthService from "../../services/auth.service";
+import * as ROUTES from '../../utils/routes.location';
 
 const Login = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [form, setForm] = useState({email: '', password: ''});
     const location = useNavigate();
 
     useEffect(() => {
@@ -16,12 +14,16 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (email && password) {
-            (new SecurityModel()).authentication(email, password)
-                .then(() => (new UserModel()).getCurrentUser())
+        if (form.email && form.password) {
+            let tokens = null
+            AuthService.login(form.email, form.password)
+                .then(token => {
+                    tokens = token;
+                    return AuthService.me(token.token);
+                })
                 .then(user => {
-                    window.sessionStorage.setItem(Token.USER_STORAGE_KEY, JSON.stringify(user));
-                    location('/dashboard');
+                    AuthService.storeUser(tokens, user);
+                    location(ROUTES.DASHBOARD);
                 });
         }
     }
@@ -70,7 +72,7 @@ const Login = () => {
                                             <label htmlFor="email" className="form-label">Email</label>
                                             <input type="email" className="form-control" id="email"
                                                    placeholder="Entrez votre email"
-                                                   onChange={(event) => setEmail(event.target.value)}
+                                                   onChange={(event) => setForm({...form, email: event.target.value})}
                                             />
                                         </div>
                                         <div className="mb-3">
@@ -79,7 +81,7 @@ const Login = () => {
                                                 <input type="password" className="form-control" id="input_password"
                                                        placeholder="Entrez votre mot de passe" aria-label="Mot de passe"
                                                        aria-describedby="password-addon"
-                                                       onChange={(event) => setPassword(event.target.value)}
+                                                       onChange={(event) => setForm({...form, password: event.target.value})}
                                                 />
                                                 <button className="btn btn-light " type="button" id="password-addon"
                                                         onClick={() => showPassword()}
@@ -118,7 +120,7 @@ const Login = () => {
                                         </ul>
                                     </div>
                                     <div className="mt-4 text-center">
-                                        <NavLink to="/reset-password" className="text-muted">
+                                        <NavLink to={ROUTES.RESET_PASSWORD} className="text-muted">
                                             <i className="mdi mdi-lock mr-1"></i>
                                             Vous avez oublié votre mot de passe ?
                                         </NavLink>
@@ -128,7 +130,7 @@ const Login = () => {
                         </div>
                         <Footer
                             text="Vous n'avez pas de compte ?"
-                            url="/register"
+                            url={ROUTES.REGISTER}
                             textButton="Créez votre compte !"
                         />
                     </div>

@@ -5,24 +5,25 @@ import Register from './pages/security/Register';
 import ResetPassword from './pages/security/ResetPassword';
 import NotFound from './pages/NotFound';
 import Drive from './pages/drive/Drive';
-import PrivateRoute from './services/utils/PrivateRoute';
+import PrivateRoute from './utils/private.route';
 import Logout from "./pages/security/Logout";
 import Dashboard from "./pages/drive/Dashboard";
+import * as ROUTES from './utils/routes.location';
 
 const App = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route exact path='/' element={<Login />} />
-                <Route exact path='/login' element={<Login />} />
-                <Route exact path='/logout' element={<Logout />} />
-                <Route exact path='/register' element={<Register />} />
-                <Route exact path='/reset-password' element={<ResetPassword />} />
-                <Route exact path='/dashboard' element={<PrivateRoute/>}>
-                    <Route exact path='/dashboard' element={<Dashboard />} />
+                <Route exact path={ROUTES.BASE} element={<Login />} />
+                <Route exact path={ROUTES.LOGIN} element={<Login />} />
+                <Route exact path={ROUTES.LOGOUT} element={<Logout />} />
+                <Route exact path={ROUTES.REGISTER} element={<Register />} />
+                <Route exact path={ROUTES.RESET_PASSWORD} element={<ResetPassword />} />
+                <Route exact path={ROUTES.DASHBOARD} element={<PrivateRoute/>}>
+                    <Route exact path={ROUTES.DASHBOARD} element={<Dashboard />} />
                 </Route>
-                <Route exact path='/drive' element={<PrivateRoute/>}>
-                    <Route exact path='/drive' element={<Drive />} />
+                <Route exact path={ROUTES.DRIVE} element={<PrivateRoute/>}>
+                    <Route exact path={ROUTES.DRIVE} element={<Drive />} />
                 </Route>
                 <Route exact path='*' element={<NotFound />} />
             </Routes>

@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import Footer from "./components/Footer";
+import * as ROUTES from '../../utils/routes.location';
 
 const ResetPassword = () => {
     useEffect(() => {
@@ -55,7 +56,7 @@ const ResetPassword = () => {
                         </div>
                         <Footer
                             text="Vous vous souvenez de votre compte ?"
-                            url="/login"
+                            url={ROUTES.LOGIN}
                             textButton="Connectez-vous !"
                         />
                     </div>
