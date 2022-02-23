@@ -6,6 +6,7 @@ import * as ROUTES from '../../utils/routes.location';
 
 const Login = () => {
     const [form, setForm] = useState({email: '', password: ''});
+    const [formErrors, setFormErrors] = useState({email: '', password: ''});
     const location = useNavigate();
 
     useEffect(() => {
@@ -14,18 +15,39 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (form.email && form.password) {
-            let tokens = null
-            AuthService.login(form.email, form.password)
-                .then(token => {
-                    tokens = token;
-                    return AuthService.me(token.token);
-                })
-                .then(user => {
-                    AuthService.storeUser(tokens, user);
-                    location(ROUTES.DASHBOARD);
-                });
+        if (!formIsValid()) {
+            return;
         }
+
+        let tokens = null
+        AuthService.login(form.email, form.password)
+            .then(token => {
+                tokens = token;
+                return AuthService.me(token.token);
+            })
+            .then(user => {
+                AuthService.storeUser(tokens, user);
+                location(ROUTES.DASHBOARD);
+            });
+    }
+
+    const formIsValid = () => {
+        let errors = {email: '', password: ''};
+        if (!form.email) {
+            errors.email = 'Ce champs est requis';
+        } else if (!form.email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{2,}$/)) {
+            errors.email = 'Cet email n\'est pas valide';
+        }
+        if (!form.password) {
+            errors.password = 'Ce champs est requis';
+        }
+
+        setFormErrors(errors);
+        if (!errors.email && !errors.password) {
+            return true;
+        }
+
+        return false;
     }
 
     const showPassword = () => {
@@ -74,6 +96,9 @@ const Login = () => {
                                                    placeholder="Entrez votre email"
                                                    onChange={(event) => setForm({...form, email: event.target.value})}
                                             />
+                                            <ul className="parsley-errors-list filled">
+                                                <li className="parsley-required">{formErrors.email}</li>
+                                            </ul>
                                         </div>
                                         <div className="mb-3">
                                             <label className="form-label">Mot de passe</label>
@@ -81,7 +106,10 @@ const Login = () => {
                                                 <input type="password" className="form-control" id="input_password"
                                                        placeholder="Entrez votre mot de passe" aria-label="Mot de passe"
                                                        aria-describedby="password-addon"
-                                                       onChange={(event) => setForm({...form, password: event.target.value})}
+                                                       onChange={(event) => setForm({
+                                                           ...form,
+                                                           password: event.target.value
+                                                       })}
                                                 />
                                                 <button className="btn btn-light " type="button" id="password-addon"
                                                         onClick={() => showPassword()}
@@ -89,6 +117,9 @@ const Login = () => {
                                                     <i className="mdi mdi-eye-outline"></i>
                                                 </button>
                                             </div>
+                                            <ul className="parsley-errors-list filled">
+                                                <li className="parsley-required">{formErrors.password}</li>
+                                            </ul>
                                         </div>
                                         <div className="mt-3 d-grid">
                                             <button className="btn btn-primary waves-effect waves-light" type="submit">
