@@ -7,6 +7,8 @@ import * as ROUTES from '../../utils/routes.location';
 const Login = () => {
     const [form, setForm] = useState({email: '', password: ''});
     const [formErrors, setFormErrors] = useState({email: '', password: ''});
+    const [formSubmited, setFormSubmited] = useState(false);
+    const [invalidCredentials, setInvalidCredentials] = useState(false);
     const location = useNavigate();
 
     useEffect(() => {
@@ -18,6 +20,7 @@ const Login = () => {
         if (!formIsValid()) {
             return;
         }
+        setFormSubmited(true);
 
         let tokens = null
         AuthService.login(form.email, form.password)
@@ -28,6 +31,12 @@ const Login = () => {
             .then(user => {
                 AuthService.storeUser(tokens, user);
                 location(ROUTES.DASHBOARD);
+            })
+            .catch(error => {
+                if (error.response.status === 401 && error.response.statusText === 'Unauthorized') {
+                    setInvalidCredentials(true);
+                }
+                setFormSubmited(false);
             });
     }
 
@@ -88,6 +97,11 @@ const Login = () => {
                                             </span>
                                     </div>
                                 </div>
+                                {invalidCredentials &&
+                                    <div className="alert alert-warning" role="alert">
+                                        L'identifiant et/ou le mot de passe sont incorrects.
+                                    </div>
+                                }
                                 <div className="p-2">
                                     <form className="form-horizontal" onSubmit={handleSubmit}>
                                         <div className="mb-3">
@@ -122,7 +136,12 @@ const Login = () => {
                                             </ul>
                                         </div>
                                         <div className="mt-3 d-grid">
-                                            <button className="btn btn-primary waves-effect waves-light" type="submit">
+                                            <button className="btn btn-primary waves-effect waves-light" type="submit"
+                                                    disabled={formSubmited}
+                                            >
+                                                {formSubmited &&
+                                                    <i className="bx bx-loader bx-spin font-size-16 align-middle me-2"></i>
+                                                }
                                                 Se connecter
                                             </button>
                                         </div>

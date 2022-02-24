@@ -5,10 +5,9 @@ import AuthService from "../../services/auth.service";
 import * as ROUTES from '../../utils/routes.location';
 
 const Register = () => {
-    const [lastname, setLastname] = useState("");
-    const [firstname, setFirstname] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [form, setForm] = useState({lastname: '', firstname: '', email: '', password: ''});
+    const [formErrors, setFormErrors] = useState({lastname: '', firstname: '', email: '', password: ''});
+    const [formSubmited, setFormSubmited] = useState(false);
     const location = useNavigate();
 
     useEffect(() => {
@@ -17,18 +16,50 @@ const Register = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (lastname && firstname && email && password) {
-            let currentUser = null;
-            AuthService.register(lastname, firstname, email, password)
-                .then(user => {
-                    currentUser = user;
-                    return AuthService.login(email, password);
-                })
-                .then(token => {
-                    AuthService.storeUser(token, currentUser);
-                    location(ROUTES.DASHBOARD);
-                });
+        if (!formIsValid()) {
+            return;
         }
+        setFormSubmited(true);
+
+        let currentUser = null;
+        AuthService.register(form.lastname, form.firstname, form.email, form.password)
+            .then(user => {
+                currentUser = user;
+                return AuthService.login(form.email, form.password);
+            })
+            .then(token => {
+                AuthService.storeUser(token, currentUser);
+                location(ROUTES.DASHBOARD);
+            })
+            .catch(() => {
+                setFormSubmited(false);
+                setFormErrors({...formErrors, email: 'Cet email exist déjà'});
+            });
+    }
+
+    const formIsValid = () => {
+        let errors = {lastname: '', firstname: '', email: '', password: ''};
+        if (!form.lastname) {
+            errors.lastname = 'Ce champs est requis';
+        }
+        if (!form.firstname) {
+            errors.firstname = 'Ce champs est requis';
+        }
+        if (!form.email) {
+            errors.email = 'Ce champs est requis';
+        } else if (!form.email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{2,}$/)) {
+            errors.email = 'Cet email n\'est pas valide';
+        }
+        if (!form.password) {
+            errors.password = 'Ce champs est requis';
+        }
+
+        setFormErrors(errors);
+        if (!errors.lastname && !errors.firstname && !errors.email && !errors.password) {
+            return true;
+        }
+
+        return false;
     }
 
     const showPassword = () => {
@@ -75,22 +106,37 @@ const Register = () => {
                                             <label htmlFor="lastname" className="form-label">Nom</label>
                                             <input type="lastname" className="form-control" id="lastname"
                                                    placeholder="Entrez votre nom"
-                                                   onChange={(event) => setLastname(event.target.value)}
+                                                   onChange={(event) => setForm({
+                                                       ...form,
+                                                       lastname: event.target.value
+                                                   })}
                                             />
+                                            <ul className="parsley-errors-list filled">
+                                                <li className="parsley-required">{formErrors.lastname}</li>
+                                            </ul>
                                         </div>
                                         <div className="mb-3">
                                             <label htmlFor="firstname" className="form-label">Prénom</label>
                                             <input type="firstname" className="form-control" id="firstname"
                                                    placeholder="Entrez votre prénom"
-                                                   onChange={(event) => setFirstname(event.target.value)}
+                                                   onChange={(event) => setForm({
+                                                       ...form,
+                                                       firstname: event.target.value
+                                                   })}
                                             />
+                                            <ul className="parsley-errors-list filled">
+                                                <li className="parsley-required">{formErrors.firstname}</li>
+                                            </ul>
                                         </div>
                                         <div className="mb-3">
                                             <label htmlFor="email" className="form-label">Email</label>
                                             <input type="email" className="form-control" id="email"
                                                    placeholder="Entrez votre email"
-                                                   onChange={(event) => setEmail(event.target.value)}
+                                                   onChange={(event) => setForm({...form, email: event.target.value})}
                                             />
+                                            <ul className="parsley-errors-list filled">
+                                                <li className="parsley-required">{formErrors.email}</li>
+                                            </ul>
                                         </div>
                                         <div className="mb-3">
                                             <label className="form-label">Mot de passe</label>
@@ -98,7 +144,10 @@ const Register = () => {
                                                 <input type="password" className="form-control" id="input_password"
                                                        placeholder="Entrez votre mot de passe" aria-label="Mot de passe"
                                                        aria-describedby="password-addon"
-                                                       onChange={(event) => setPassword(event.target.value)}
+                                                       onChange={(event) => setForm({
+                                                           ...form,
+                                                           password: event.target.value
+                                                       })}
                                                 />
                                                 <button className="btn btn-light " type="button" id="password-addon"
                                                         onClick={() => showPassword()}
@@ -106,9 +155,17 @@ const Register = () => {
                                                     <i className="mdi mdi-eye-outline"></i>
                                                 </button>
                                             </div>
+                                            <ul className="parsley-errors-list filled">
+                                                <li className="parsley-required">{formErrors.password}</li>
+                                            </ul>
                                         </div>
                                         <div className="mt-3 d-grid">
-                                            <button className="btn btn-primary waves-effect waves-light" type="submit">
+                                            <button className="btn btn-primary waves-effect waves-light" type="submit"
+                                                    disabled={formSubmited}
+                                            >
+                                                {formSubmited &&
+                                                    <i className="bx bx-loader bx-spin font-size-16 align-middle me-2"></i>
+                                                }
                                                 S'enregistrer
                                             </button>
                                         </div>
