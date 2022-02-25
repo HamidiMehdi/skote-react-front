@@ -10,8 +10,8 @@ const Footer = (props) => {
             </NavLink>
             </p>
             <p>
-                © {new Date().getFullYear()} Skote Drive.
-                By Mehdi HAMIDI
+                © {new Date().getFullYear()} Skote.
+                Mehdi HAMIDI
             </p>
         </div>
     );

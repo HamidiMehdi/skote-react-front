@@ -12,7 +12,7 @@ const Login = () => {
     const location = useNavigate();
 
     useEffect(() => {
-        document.title = 'Skote Drive | Authentification';
+        document.title = 'Skote | Authentification';
     }, []);
 
     const handleSubmit = (e) => {
@@ -30,7 +30,7 @@ const Login = () => {
             })
             .then(user => {
                 AuthService.storeUser(tokens, user);
-                location(ROUTES.DASHBOARD);
+                location(ROUTES.CHAT);
             })
             .catch(error => {
                 if (error.response.status === 401 && error.response.statusText === 'Unauthorized') {
@@ -79,8 +79,8 @@ const Login = () => {
                                 <div className="row">
                                     <div className="col-7">
                                         <div className="text-primary p-4">
-                                            <h5 className="text-primary">Skote Drive</h5>
-                                            <p>Connectez-vous pour accéder à votre drive.</p>
+                                            <h5 className="text-primary">Skote</h5>
+                                            <p>Connectez-vous pour accéder à votre compte.</p>
                                         </div>
                                     </div>
                                     <div className="col-5 align-self-end">
