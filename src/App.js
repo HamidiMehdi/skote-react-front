@@ -7,8 +7,9 @@ import NotFound from './pages/NotFound';
 import PrivateRoute from './services/utils/private.route';
 import Logout from "./pages/security/Logout";
 import Friend from "./pages/friend/Friend";
-import * as ROUTES from './services/utils/routes.location';
 import Chat from "./pages/chat/Chat";
+import Profil from "./pages/profil/Profil";
+import * as ROUTES from './services/utils/routes.location';
 import {Provider} from "react-redux";
 import {store} from "./services/redux/auth.store.redux";
 
@@ -27,6 +28,9 @@ const App = () => {
                     </Route>
                     <Route exact path={ROUTES.FRIEND} element={<PrivateRoute/>}>
                         <Route exact path={ROUTES.FRIEND} element={<Friend/>}/>
+                    </Route>
+                    <Route exact path={ROUTES.PROFIL} element={<PrivateRoute/>}>
+                        <Route exact path={ROUTES.PROFIL} element={<Profil/>}/>
                     </Route>
                     <Route exact path='*' element={<NotFound/>}/>
                 </Routes>

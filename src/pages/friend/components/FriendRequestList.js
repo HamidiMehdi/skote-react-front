@@ -1,39 +1,40 @@
 import React from 'react';
 import getMonthLabel from "../../../services/utils/month.util";
 
-const FindFriendList = () => {
-    const getFriends = () => {
+const RequestFriendList = () => {
+    const getFriendRequests = () => {
         return [
             {
-                lastname: 'ZHU',
-                firstname: 'Charles',
+                lastname: 'LENIN',
+                firstname: 'Francois',
                 requestedAt: new Date()
             },
             {
-                lastname: 'SAYAH',
-                firstname: 'Ahmed',
+                lastname: 'VENEL',
+                firstname: 'Romain',
                 requestedAt: new Date()
             },
             {
-                lastname: 'NABI',
-                firstname: 'Jahid',
+                lastname: 'LOVITON',
+                firstname: 'Thomas',
                 requestedAt: new Date()
-            },
+            }
         ];
     }
 
     return (
         <div>
-            <h4 className="card-title mb-1">Trouver un amis</h4>
+            <h4 className="card-title mb-1">Mes demandes d'amis</h4>
             <p className="card-title-desc">
-                Retrouvez l'ensemble des personnes avec qui vous êtes amis.
+                Retrouvez toutes les personnes qui vous ont demandé en amis. <br/>
+                Vous pouvez accepter ou refuser leurs invitations.
             </p>
             <div className="row mb-2">
                 <div className="col-sm-4">
                     <div className="search-box me-2 mb-2 d-inline-block">
                         <div className="position-relative">
                             <input type="text" className="form-control" placeholder="Search..." />
-                            <i className="bx bx-search-alt search-icon"></i>
+                                <i className="bx bx-search-alt search-icon"></i>
                         </div>
                     </div>
                 </div>
@@ -50,7 +51,7 @@ const FindFriendList = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {getFriends().map((user, key) => (
+                    {getFriendRequests().map((user, key) => (
                         <tr key={key}>
                             <td>
                                 <div className="avatar-xs">
@@ -121,4 +122,4 @@ const FindFriendList = () => {
     );
 }
 
-export default FindFriendList;
+export default RequestFriendList;

@@ -2,25 +2,21 @@ import React from 'react';
 import getMonthLabel from "../../../services/utils/month.util";
 
 const FriendList = () => {
-
     const getFriends = () => {
         return [
             {
                 lastname: 'LENIN',
                 firstname: 'Francois',
-                image: 'img/security/default-user-img.png',
                 requestedAt: new Date()
             },
             {
                 lastname: 'VENEL',
                 firstname: 'Romain',
-                image: 'img/security/default-user-img.png',
                 requestedAt: new Date()
             },
             {
                 lastname: 'LOVITON',
                 firstname: 'Thomas',
-                image: 'img/security/default-user-img.png',
                 requestedAt: new Date()
             }
         ];
@@ -32,35 +28,97 @@ const FriendList = () => {
             <p className="card-title-desc">
                 Retrouvez l'ensemble des personnes avec qui vous êtes amis.
             </p>
+            <div className="row mb-2">
+                <div className="col-sm-4">
+                    <div className="search-box me-2 mb-2 d-inline-block">
+                        <div className="position-relative">
+                            <input type="text" className="form-control" placeholder="Search..." />
+                            <i className="bx bx-search-alt search-icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div className="table-responsive">
-                <table className="table mb-0">
-
+                <table className="table align-middle table-nowrap table-hover">
                     <thead className="table-light">
                     <tr>
-                        <th>Image</th>
-                        <th>Prénom</th>
-                        <th>Nom</th>
-                        <th>Date</th>
+                        <th scope="col">#</th>
+                        <th scope="col">Prénom</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Action</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {getFriends().map(user => (
-                        <tr>
-                            <th>
-                                <img src={user.image} alt="" className="avatar-sm rounded-circle"/>
-                            </th>
-                            <td>{user.firstname}</td>
+                    {getFriends().map((user, key) => (
+                        <tr key={key}>
+                            <td>
+                                <div className="avatar-xs">
+                                    <span className="avatar-title rounded-circle">
+                                        {user.firstname.charAt(0).toLocaleUpperCase()}
+                                        {user.lastname.charAt(0).toLocaleUpperCase()}
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <p className="text-muted mb-0">{user.firstname}</p>
+                            </td>
                             <td>{user.lastname}</td>
                             <td>
                                 {user.requestedAt.getDate()} {getMonthLabel(user.requestedAt.getMonth())} {user.requestedAt.getFullYear()}
+                            </td>
+                            <td>
+                                <ul className="list-inline font-size-20 contact-links mb-0">
+                                    <li className="list-inline-item px-2">
+                                        <span role="button" title="Message">
+                                            <i className="bx bx-message-square-dots"></i>
+                                        </span>
+                                    </li>
+                                    <li className="list-inline-item px-2">
+                                        <span role="button" title="Profile">
+                                            <i className="bx bx-user-circle"></i>
+                                        </span>
+                                    </li>
+                                </ul>
                             </td>
                         </tr>
                     ))}
                     </tbody>
                 </table>
             </div>
+            <div className="row">
+                <div className="col-lg-12">
+                    <ul className="pagination pagination-rounded justify-content-center mt-4">
+                        <li className="page-item disabled">
+                            <span role="button" className="page-link">
+                                <i className="mdi mdi-chevron-left"></i>
+                            </span>
+                        </li>
+                        <li className="page-item">
+                            <span role="button" className="page-link">1</span>
+                        </li>
+                        <li className="page-item active">
+                            <span role="button" className="page-link">2</span>
+                        </li>
+                        <li className="page-item">
+                            <span role="button" className="page-link">3</span>
+                        </li>
+                        <li className="page-item">
+                            <span role="button" className="page-link">4</span>
+                        </li>
+                        <li className="page-item">
+                            <span role="button" className="page-link">5</span>
+                        </li>
+                        <li className="page-item">
+                            <span role="button" className="page-link">
+                                <i className="mdi mdi-chevron-right"></i>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    );
+);
 }
 
 export default FriendList;

@@ -22,11 +22,11 @@ const Sidebar = (props) => {
                             </NavLink>
                         </li>
                         <li className="menu-title">Paramètre</li>
-                        <li>
-                            <a href="apps-filemanager.html" className="waves-effect">
+                        <li className={(props.active === 'profil' ? 'mm-active' : '')}>
+                            <NavLink to={ROUTES.PROFIL} className="waves-effect">
                                 <i className="bx bxs-user-detail"></i>
                                 <span key="t-file-manager">Profil</span>
-                            </a>
+                            </NavLink>
                         </li>
                         <li>
                             <NavLink to={ROUTES.LOGOUT} className="waves-effect">
