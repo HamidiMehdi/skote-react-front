@@ -1,14 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import Footer from "./components/Footer";
 import {useNavigate} from "react-router-dom";
-import AuthService from "../../services/auth.service";
-import * as ROUTES from '../../utils/routes.location';
+import AuthApi from "../../services/api/auth.api";
+import * as ROUTES from '../../services/utils/routes.location';
+import {useDispatch} from "react-redux";
+import {setAuth, setRefreshToken, setToken, setUser} from "../../services/redux/auth.store.redux";
 
 const Register = () => {
     const [form, setForm] = useState({lastname: '', firstname: '', email: '', password: ''});
     const [formErrors, setFormErrors] = useState({lastname: '', firstname: '', email: '', password: ''});
     const [formSubmited, setFormSubmited] = useState(false);
     const location = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         document.title = 'Skote | Inscription';
@@ -21,14 +24,17 @@ const Register = () => {
         }
         setFormSubmited(true);
 
-        let currentUser = null;
-        AuthService.register(form.lastname, form.firstname, form.email, form.password)
+        let userRegistred = null;
+        AuthApi.register(form.lastname, form.firstname, form.email, form.password)
             .then(user => {
-                currentUser = user;
-                return AuthService.login(form.email, form.password);
+                userRegistred = user;
+                return AuthApi.login(form.email, form.password);
             })
             .then(token => {
-                AuthService.storeUser(token, currentUser);
+                dispatch(setAuth(true));
+                dispatch(setToken(token.token));
+                dispatch(setRefreshToken(token.refresh_token));
+                dispatch(setUser(JSON.stringify(userRegistred)));
                 location(ROUTES.CHAT);
             })
             .catch(() => {

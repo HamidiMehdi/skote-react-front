@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import Footer from "./components/Footer";
-import * as ROUTES from '../../utils/routes.location';
+import * as ROUTES from '../../services/utils/routes.location';
 
 const ResetPassword = () => {
     useEffect(() => {

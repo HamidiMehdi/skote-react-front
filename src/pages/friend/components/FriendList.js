@@ -1,5 +1,5 @@
 import React from 'react';
-import getMonthLabel from "../../../utils/month.util";
+import getMonthLabel from "../../../services/utils/month.util";
 
 const FriendList = () => {
 

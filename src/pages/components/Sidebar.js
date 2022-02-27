@@ -1,6 +1,6 @@
 import React from 'react';
 import {NavLink} from "react-router-dom";
-import * as ROUTES from '../../utils/routes.location';
+import * as ROUTES from '../../services/utils/routes.location';
 
 const Sidebar = (props) => {
     return (

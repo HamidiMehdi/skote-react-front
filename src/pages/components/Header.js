@@ -1,7 +1,9 @@
 import React from 'react';
-import AuthService from "../../services/auth.service";
+import {useSelector} from "react-redux";
 
 const Header = () => {
+    const authStore = useSelector(state => state.auth);
+
     const handleShowSidbar = () => {
         let body = document.querySelector('body');
         if (body.classList.contains('sidebar-enable')) {
@@ -20,10 +22,10 @@ const Header = () => {
                     <div className="navbar-brand-box">
                         <div className="logo logo-light">
                                 <span className="logo-sm">
-                                    <img src="img/security/logo.svg" alt="" height="22" />
+                                    <img src="img/security/logo.svg" alt="" height="22"/>
                                 </span>
                             <span className="logo-lg">
-                                    <img src="img/security/logo-light.png" alt="" height="19" />
+                                    <img src="img/security/logo-light.png" alt="" height="19"/>
                                 </span>
                         </div>
                     </div>
@@ -33,8 +35,8 @@ const Header = () => {
                     </button>
                     <form className="app-search d-none d-lg-block">
                         <div className="position-relative">
-                            <input type="text" className="form-control" placeholder="Recherché..." />
-                                <span className="bx bx-search-alt"></span>
+                            <input type="text" className="form-control" placeholder="Recherché..."/>
+                            <span className="bx bx-search-alt"></span>
                         </div>
                     </form>
                 </div>
@@ -42,10 +44,10 @@ const Header = () => {
                     <div className="dropdown d-inline-block">
                         <img className="rounded-circle header-profile-user"
                              src="img/security/default-user-img.png"
-                             alt="Header Avatar" />
-                        <span className="d-none d-xl-inline-block ms-1" key="t-henry">
-                                {AuthService.getCurrentUser().firstname}
-                            </span>
+                             alt="Header Avatar"/>
+                        <span className="d-none d-xl-inline-block ms-1">
+                                {JSON.parse(authStore.user).firstname}
+                        </span>
                     </div>
                 </div>
             </div>

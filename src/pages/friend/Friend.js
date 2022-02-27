@@ -8,8 +8,6 @@ const Dashboard = () => {
     const friendListTab = 'friendListTab';
     const findFriendListTab = 'findFriendList';
     const requestFriendListTab = 'requestFriendListTab';
-
-
     const [tab, setTab] = useState(friendListTab)
 
     useEffect(() => {

@@ -1,15 +1,17 @@
 import React, {useEffect} from 'react';
 import {useNavigate} from "react-router-dom";
-import AuthService from "../../services/auth.service";
-import {LOGIN} from '../../utils/routes.location';
+import {LOGIN} from '../../services/utils/routes.location';
+import {useDispatch} from "react-redux";
+import {reset} from "../../services/redux/auth.store.redux";
 
 const Logout = () => {
+    const dispatch = useDispatch();
     const location = useNavigate();
 
     useEffect(() => {
-        AuthService.logout();
+        dispatch(reset())
         location(LOGIN);
-    }, [location])
+    }, [dispatch, location]);
 
     return (
         <div></div>

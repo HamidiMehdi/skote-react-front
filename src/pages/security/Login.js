@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {NavLink, useNavigate} from 'react-router-dom';
 import Footer from "./components/Footer";
-import AuthService from "../../services/auth.service";
-import * as ROUTES from '../../utils/routes.location';
+import AuthApi from "../../services/api/auth.api";
+import * as ROUTES from '../../services/utils/routes.location';
+import {useDispatch} from "react-redux";
+import {setAuth, setRefreshToken, setToken, setUser} from "../../services/redux/auth.store.redux";
 
 const Login = () => {
     const [form, setForm] = useState({email: '', password: ''});
@@ -10,6 +12,7 @@ const Login = () => {
     const [formSubmited, setFormSubmited] = useState(false);
     const [invalidCredentials, setInvalidCredentials] = useState(false);
     const location = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         document.title = 'Skote | Authentification';
@@ -22,14 +25,18 @@ const Login = () => {
         }
         setFormSubmited(true);
 
-        let tokens = null
-        AuthService.login(form.email, form.password)
-            .then(token => {
-                tokens = token;
-                return AuthService.me(token.token);
+        const store = {token: null, refreshToken: null};
+        AuthApi.login(form.email, form.password)
+            .then(response => {
+                store.token = response.token;
+                store.refreshToken = response.refresh_token;
+                return AuthApi.me(response.token);
             })
             .then(user => {
-                AuthService.storeUser(tokens, user);
+                dispatch(setAuth(true));
+                dispatch(setToken(store.token));
+                dispatch(setRefreshToken(store.refreshToken));
+                dispatch(setUser(JSON.stringify(user)));
                 location(ROUTES.CHAT);
             })
             .catch(error => {
