@@ -1,9 +1,9 @@
-export default function authHeader(token = null) {
-    const storage = JSON.parse(localStorage.getItem(process.env.REACT_APP_USER_KEY_STORAGE));
-    if (storage || token) {
+export default function authHeader(token, contentType = null, accept = null) {
+    if (token) {
         return {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + (token ? token : storage.token.token)
+            'Content-Type': (contentType === null ? 'application/json' : contentType) + '; charset=utf-8',
+            'Authorization': 'Bearer ' + token,
+            'Accept': accept === null ? 'application/json' : accept
         };
     }
 
