@@ -3,7 +3,7 @@ export default function authHeader(token, contentType = null, accept = null) {
         return {
             'Content-Type': (contentType === null ? 'application/json' : contentType) + '; charset=utf-8',
             'Authorization': 'Bearer ' + token,
-            'Accept': accept === null ? 'application/json' : accept
+            'Accept': accept === null ? 'application/ld+json' : accept
         };
     }
 

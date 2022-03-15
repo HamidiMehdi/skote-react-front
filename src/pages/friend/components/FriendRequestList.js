@@ -2,33 +2,53 @@ import React, {useEffect, useState} from 'react';
 import getMonthLabel from "../../../services/utils/month.util";
 import FriendApi from "../../../services/api/friend.api";
 import {useSelector} from "react-redux";
+import Pagination from "../../components/Pagination";
 
 const RequestFriendList = () => {
-    const [friendRequests, setFriendRequests] = useState([]);
+    const [friendships, setFriendships] = useState([]);
+    const [friendshipsLoading, setFriendshipsLoading] = useState(false);
+
+    const [pagination, setPagination] = useState({search: '', totalItems: 0, page: 1})
+    const [searchTimer, setSearchTimer] = useState(null);
+
     const [friendModal, setFriendModal] = useState({});
     const [modalLoading, setModalLoading] = useState(false);
+
+    const itemsPerPage = 10;
     const authStore = useSelector(state => state.auth);
 
     useEffect(() => {
-        getFriendRequests();
-    }, []);
+        getFriendship();
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    const getFriendRequests = (search = null, page = 1) => {
-        FriendApi.getFriendRequests(authStore.token, JSON.parse(authStore.user).id , page)
-            .then(friendRequestsList => {
-                setFriendRequests(friendRequestsList);
+    const getFriendship = (search = '', page = 1) => {
+        setFriendshipsLoading(true);
+        FriendApi.getCollection(authStore.token, JSON.parse(authStore.user).id, itemsPerPage, search, page)
+            .then(friendshipCollection => {
+                setFriendships(friendshipCollection.items);
+                setFriendshipsLoading(false);
+                setPagination({...pagination, page: page, totalItems: friendshipCollection.totalItems});
+            })
+            .catch(() => {
+                setFriendshipsLoading(false);
             });
     }
 
-    const saveFriendForModal = (key, action) => {
-        setFriendModal({friend: friendRequests[key], action: action});
+    const handleSearch = (value) => {
+        setPagination({...pagination, search: value});
+        if (searchTimer !== null) {
+            setSearchTimer(clearTimeout(searchTimer));
+        }
+        setSearchTimer(setTimeout(() => {
+            getFriendship(value)
+        }, 400));
     }
 
-    const handleFriendRequest = () => {
+    const handleFriendship = () => {
         setModalLoading(true);
-        FriendApi.acceptRejectFriendRequest(authStore.token, friendModal.friend.setAccepted(friendModal.action === 'add'))
-            .then((friendship) => {
-                setFriendRequests(friendRequests.filter(friend => friend.id !== friendship.id));
+        FriendApi.acceptRejectFriendship(authStore.token, friendModal.friend.setAccepted(friendModal.action === 'add'))
+            .then(() => {
+                getFriendship(pagination.search, pagination.page)
                 document.querySelector('#friendRequestCloseModal').click();
                 setModalLoading(false);
             })
@@ -37,9 +57,11 @@ const RequestFriendList = () => {
             });
     }
 
-    const removeFriendRequestFromState = (id) => {
-        const filtered = friendRequests.filter(friendship => friendship.id !== id);
-        setFriendRequests(filtered);
+    const changePage = (page) => {
+        if (!page) {
+            return;
+        }
+        getFriendship(pagination.search, page);
     }
 
     return (
@@ -49,12 +71,20 @@ const RequestFriendList = () => {
                 Retrouvez toutes les personnes qui vous ont demandé en amis.
             </p>
             <div className="row mb-2">
-                <div className="col-sm-4">
+                <div className="col-sm-10">
                     <div className="search-box me-2 mb-2 d-inline-block">
                         <div className="position-relative">
-                            <input type="text" className="form-control" placeholder="Search..."/>
+                            <input type="text" className="form-control" placeholder="Rechercher..."
+                                   onChange={(e) => handleSearch(e.target.value)}/>
                             <i className="bx bx-search-alt search-icon"></i>
                         </div>
+                    </div>
+                </div>
+                <div className="col-sm-2">
+                    <div className="text-sm-end">
+                        {friendshipsLoading &&
+                            <i className="bx bx-loader bx-spin font-size-16 align-middle me-2"></i>
+                        }
                     </div>
                 </div>
             </div>
@@ -70,7 +100,7 @@ const RequestFriendList = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {friendRequests.map((friendship, key) => (
+                    {friendships.map((friendship, key) => (
                         <tr key={key}>
                             <td>
                                 <div className="avatar-xs">
@@ -90,13 +120,13 @@ const RequestFriendList = () => {
                             <td>
                                 <ul className="list-inline font-size-20 contact-links mb-0">
                                     <li className="list-inline-item px-2">
-                                        <span role="button" onClick={() => saveFriendForModal(key, 'add')} data-bs-toggle="modal"
+                                        <span role="button" onClick={() => setFriendModal({friend: friendships[key], action: 'add'})} data-bs-toggle="modal"
                                               data-bs-target="#friendRequestModal">
                                             <i className="bx bx-check-circle"></i>
                                         </span>
                                     </li>
                                     <li className="list-inline-item px-2">
-                                        <span role="button" onClick={() => saveFriendForModal(key, 'remove')}
+                                        <span role="button" onClick={() => setFriendModal({friend: friendships[key], action: 'remove'})}
                                               data-bs-toggle="modal" data-bs-target="#friendRequestModal">
                                             <i className="bx bx bx-x-circle"></i>
                                         </span>
@@ -105,7 +135,7 @@ const RequestFriendList = () => {
                             </td>
                         </tr>
                     ))}
-                    {friendRequests.length === 0 && (
+                    {friendships.length === 0 && (
                         <tr>
                             <td colSpan={5}>
                                 <p className="text-muted mb-0">Aucune demande d'amis trouvée</p>
@@ -115,37 +145,7 @@ const RequestFriendList = () => {
                     </tbody>
                 </table>
             </div>
-            <div className="row">
-                <div className="col-lg-12">
-                    <ul className="pagination pagination-rounded justify-content-center mt-4">
-                        <li className="page-item disabled">
-                            <span role="button" className="page-link">
-                                <i className="mdi mdi-chevron-left"></i>
-                            </span>
-                        </li>
-                        <li className="page-item">
-                            <span role="button" className="page-link">1</span>
-                        </li>
-                        <li className="page-item active">
-                            <span role="button" className="page-link">2</span>
-                        </li>
-                        <li className="page-item">
-                            <span role="button" className="page-link">3</span>
-                        </li>
-                        <li className="page-item">
-                            <span role="button" className="page-link">4</span>
-                        </li>
-                        <li className="page-item">
-                            <span role="button" className="page-link">5</span>
-                        </li>
-                        <li className="page-item">
-                            <span role="button" className="page-link">
-                                <i className="mdi mdi-chevron-right"></i>
-                            </span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+            <Pagination page={pagination.page} totalItems={pagination.totalItems} itemsPerPage={itemsPerPage} changePage={changePage} />
             <div className="modal fade" id="friendRequestModal" tabIndex="-1" role="dialog">
                 <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content">
@@ -169,8 +169,8 @@ const RequestFriendList = () => {
                             )}
                         </div>
                         <div className="modal-footer">
-                            <button type="button" id="friendRequestCloseModal" className="btn btn-light" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary" disabled={modalLoading} onClick={() => handleFriendRequest()}>
+                            <button type="button" id="friendRequestCloseModal" className="btn btn-light" data-bs-dismiss="modal">Fermer</button>
+                            <button type="button" className="btn btn-primary" disabled={modalLoading} onClick={() => handleFriendship()}>
                                 {modalLoading &&
                                     <i className="bx bx-loader bx-spin font-size-16 align-middle me-2"></i>
                                 }
